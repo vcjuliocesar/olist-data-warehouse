@@ -1,4 +1,6 @@
-CREATE TABLE stg_customers (
+CREATE SCHEMA IF NOT EXISTS staging;
+
+CREATE TABLE IF NOT EXISTS staging.stg_customers (
     id BIGSERIAL PRIMARY KEY,
     customer_id TEXT,
     customer_unique_id TEXT,
@@ -13,7 +15,7 @@ CREATE TABLE stg_customers (
     loaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE stg_geolocation (
+CREATE TABLE IF NOT EXISTS staging.stg_geolocation (
     id BIGSERIAL PRIMARY KEY,
     geolocation_zip_code_prefix TEXT,
     geolocation_lat TEXT,
@@ -28,7 +30,7 @@ CREATE TABLE stg_geolocation (
     loaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE stg_order_items (
+CREATE TABLE IF NOT EXISTS staging.stg_order_items (
     id BIGSERIAL PRIMARY KEY,
     order_id TEXT,
     order_item_id TEXT,
@@ -45,7 +47,7 @@ CREATE TABLE stg_order_items (
     loaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE stg_order_payments (
+CREATE TABLE IF NOT EXISTS staging.stg_order_payments (
     id BIGSERIAL PRIMARY KEY,
     order_id TEXT,
     payment_sequential TEXT,
@@ -60,7 +62,7 @@ CREATE TABLE stg_order_payments (
     loaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE stg_order_reviews (
+CREATE TABLE IF NOT EXISTS staging.stg_order_reviews (
     id BIGSERIAL PRIMARY KEY,
     review_id TEXT,
     order_id TEXT,
@@ -77,7 +79,7 @@ CREATE TABLE stg_order_reviews (
     loaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE stg_orders (
+CREATE TABLE IF NOT EXISTS staging.stg_orders (
     id BIGSERIAL PRIMARY KEY,
     order_id TEXT,
     customer_id TEXT,
@@ -95,7 +97,7 @@ CREATE TABLE stg_orders (
     loaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE stg_products (
+CREATE TABLE IF NOT EXISTS staging.stg_products (
     id BIGSERIAL PRIMARY KEY,
     product_id TEXT,
     product_category_name TEXT,
@@ -114,7 +116,7 @@ CREATE TABLE stg_products (
     loaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE stg_sellers (
+CREATE TABLE IF NOT EXISTS staging.stg_sellers (
     id BIGSERIAL PRIMARY KEY,
     seller_id TEXT,
     seller_zip_code_prefix TEXT,
@@ -128,7 +130,7 @@ CREATE TABLE stg_sellers (
     loaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE stg_product_category_name_translation (
+CREATE TABLE IF NOT EXISTS staging.stg_product_category_name_translation (
     id BIGSERIAL PRIMARY KEY,
     product_category_name TEXT,
     product_category_name_english TEXT,
