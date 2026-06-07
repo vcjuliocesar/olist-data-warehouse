@@ -77,8 +77,7 @@ CREATE TABLE IF NOT EXISTS intermediate.int_sellers (
 );
 
 CREATE TABLE IF NOT EXISTS intermediate.int_product_category_name_translation (
-    id BIGSERIAL PRIMARY KEY,
-    product_category_name TEXT,
+    product_category_name TEXT NOT NULL PRIMARY KEY,
     product_category_name_english TEXT,
     loaded_at TIMESTAMP
 );
