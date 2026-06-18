@@ -1,5 +1,8 @@
 from pathlib import Path
 from app.db import get_connection
+from app.logger import setuo_logger
+
+logger = setuo_logger(__name__)
 
 def run_sql_file(file_path: str) -> None:
     path = Path(file_path)
@@ -14,4 +17,4 @@ def run_sql_file(file_path: str) -> None:
             cur.execute(sql)
         conn.commit()
     
-    print(f"Executed: {file_path}")
+    logger.info(f"Executed: {file_path}")
