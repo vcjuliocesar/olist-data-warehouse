@@ -5,12 +5,14 @@ from app.sql_runner import run_sql_file
 
 
 def main() -> None:
-    # maintenance
-    run_sql_file("sql/maintenance/001_truncate_staging.sql")
+    
     # DDL
     run_sql_file("sql/ddl/001_create_staging.sql")
     run_sql_file("sql/ddl/002_create_intermediate.sql")
     run_sql_file("sql/ddl/003_create_marts.sql")
+    
+    # maintenance
+    run_sql_file("sql/maintenance/001_truncate_staging.sql")
     
     # Transformations
     csv_files = get_csv_files("data/raw")
