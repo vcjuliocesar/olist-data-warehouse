@@ -75,6 +75,35 @@ CSV_TABLE_MAP = {
             "payment_value",
         ],
     },
+    "olist_geolocation_dataset.csv": {
+        "table":"staging.stg_geolocation",
+        "columns":[
+            "geolocation_zip_code_prefix",
+            "geolocation_lat",
+            "geolocation_lng",
+            "geolocation_city",
+            "geolocation_state",
+        ]
+    },
+    "olist_order_reviews_dataset.csv": {
+            "table":"staging.stg_order_reviews",
+            "columns":[
+                "review_id",
+                "order_id",
+                "review_score",
+                "review_comment_title",
+                "review_comment_message",
+                "review_creation_date",
+                "review_answer_timestamp",
+            ]
+        },
+    "product_category_name_translation.csv": {
+                "table":"staging.stg_product_category_name_translation",
+                "columns":[
+                    "product_category_name",
+                    "product_category_name_english",
+                ]
+            },
 }
 
 
