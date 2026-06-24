@@ -1,6 +1,7 @@
 from app.extract.csv_extractor import get_csv_files
 from app.load.staging_loader import load_all_csvs_to_staging
 from app.transform.sql_transformer import run_transformations
+from app.services.quality_service import QualityService
 from app.sql_runner import run_sql_file
 
 
@@ -21,7 +22,11 @@ def main() -> None:
     run_transformations()
     
     # Quality checks
-    run_sql_file("sql/quality/001_check_nulls.sql")
+    run_sql_file("sql/quality/003_check_nulls.sql")
+    
+    quality_service = QualityService()
+    
+    quality_service.validate_customer_counts()
     
     
 if __name__ == "__main__":
