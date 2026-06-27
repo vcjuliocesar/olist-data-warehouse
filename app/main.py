@@ -3,10 +3,11 @@ from app.load.staging_loader import load_all_csvs_to_staging
 from app.transform.sql_transformer import run_transformations
 from app.services.quality_service import QualityService
 from app.sql_runner import run_sql_file
+from app.utils.timer import Timer
 
 
 def main() -> None:
-    
+    timer = Timer()
     # DDL
     run_sql_file("sql/ddl/001_create_staging.sql")
     run_sql_file("sql/ddl/002_create_intermediate.sql")
@@ -28,6 +29,10 @@ def main() -> None:
     
     quality_service.validate_customer_counts()
     
+    elapsed = timer.elapsed()
+    
+    print("-" * 40)
+    print(f"Total time: {elapsed:.3f} seconds")
     
 if __name__ == "__main__":
     main()
