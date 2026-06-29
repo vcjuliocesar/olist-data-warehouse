@@ -5,9 +5,9 @@ class QualityService:
     def __init__(self):
         self.repository = EtlRepository()
         
-    def validate_customer_counts(self):
+    def validate_counts(self):
         columns, rows = self.repository.execute_query_from_file(
-            "sql/quality/004_check_customer_counts.sql"
+            "sql/quality/001_check_counts.sql"
         )
         
         result = dict(zip(columns,rows[0]))

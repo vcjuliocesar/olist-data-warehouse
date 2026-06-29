@@ -27,7 +27,7 @@ def main() -> None:
     
     quality_service = QualityService()
     
-    quality_service.validate_customer_counts()
+    quality_service.validate_counts()
     
     elapsed = timer.elapsed()
     
