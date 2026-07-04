@@ -78,8 +78,36 @@ class QualityService:
                 has_error = True
                             
         if has_error:
-            raise Exception("Null validation failed.")
+            raise Exception("Duplicates validation failed.")
                                                 
         print("Validation passed.")
+        
+    
+    def validate_referential_integrity(self):
+            colums, rows = self.repository.execute_query_from_file(
+                "sql/quality/004_check_referential_integrity.sql"
+            )
+            
+            print("\nReferential Integrity Validation")
+            print("-" * 40)
+            
+            has_error = False
+            
+            for row in rows:
+                result = dict(zip(colums,row))
+                
+                check_name = result["check_name"]
+                missing_records = result["missing_records"]
+                severity = result["severity"]
+                            
+                print(f"{check_name} : {missing_records}")
+                            
+                if missing_records > 0 and severity == "error":
+                    has_error = True
+                                
+            if has_error:
+                raise Exception("Referential Integrity Validation failed.")
+                                                    
+            print("Validation passed.")
             
             

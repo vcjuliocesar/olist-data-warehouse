@@ -33,6 +33,8 @@ def main() -> None:
     
     quality_service.validate_duplicates()
     
+    quality_service.validate_referential_integrity()
+    
     elapsed = timer.elapsed()
     
     print("-" * 40)
