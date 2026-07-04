@@ -1,4 +1,4 @@
-from tabnanny import check
+from unittest import result
 
 from app.repositories.etl_repository import EtlRepository
 
@@ -54,3 +54,32 @@ class QualityService:
                 
                     
         print("Validation passed.")
+        
+    def validate_duplicates(self):
+        colums, rows = self.repository.execute_query_from_file(
+            "sql/quality/003_check_duplicates.sql"
+        )
+        
+        print("\nDuplicates Validation")
+        print("-" * 40)
+        
+        has_error = False
+        
+        for row in rows:
+            result = dict(zip(colums,row))
+            
+            check_name = result["check_name"]
+            total_duplicates = result["total_duplicates"]
+            severity = result["severity"]
+                        
+            print(f"{check_name} : {total_duplicates}")
+                        
+            if total_duplicates > 0 and severity == "error":
+                has_error = True
+                            
+        if has_error:
+            raise Exception("Null validation failed.")
+                                                
+        print("Validation passed.")
+            
+            
