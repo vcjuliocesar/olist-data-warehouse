@@ -35,6 +35,8 @@ def main() -> None:
     
     quality_service.validate_referential_integrity()
     
+    quality_service.validate_business_rules()
+    
     elapsed = timer.elapsed()
     
     print("-" * 40)

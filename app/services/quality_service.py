@@ -109,5 +109,31 @@ class QualityService:
                 raise Exception("Referential Integrity Validation failed.")
                                                     
             print("Validation passed.")
+    
+    def validate_business_rules(self):
+        colums, rows = self.repository.execute_query_from_file(
+            "sql/quality/005_check_business_rules.sql"
+        )
             
+        print("\nBusiness rules Validation")
+        print("-" * 40)
+            
+        has_error = False
+            
+        for row in rows:
+            result = dict(zip(colums,row))
+                
+            check_name = result["check_name"]
+            missing_records = result["failed_rule"]
+            severity = result["severity"]
+                            
+            print(f"{check_name} : {missing_records}")
+                            
+            if missing_records > 0 and severity == "error":
+                has_error = True
+                                
+        if has_error:
+            raise Exception("Business rules Validation failed.")
+                                                    
+        print("Validation passed.")
             
