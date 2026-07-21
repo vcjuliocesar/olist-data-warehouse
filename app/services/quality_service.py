@@ -1,139 +1,83 @@
-from unittest import result
-
+from app.exceptions import DataQualityError
 from app.repositories.etl_repository import EtlRepository
 
+
 class QualityService:
-    
-    def __init__(self):
+    def __init__(self) -> None:
         self.repository = EtlRepository()
-        
-    def validate_counts(self):
+
+    def validate_counts(self) -> None:
         columns, rows = self.repository.execute_query_from_file(
             "sql/quality/001_check_counts.sql"
         )
-        
-        result = dict(zip(columns,rows[0]))
-        
+
         print("\nCount Validation")
         print("-" * 40)
-        
-        for key,value in result.items():
-            print(f"{key}: {value}")
-            
-        if result["has_mismatch"]:
-            raise Exception(
-                "Customer count mismatch detected."
-            )
-        
-        print("Validation passed.")
-        
-    def validate_nulls(self):
-        columns,rows = self.repository.execute_query_from_file(
-            "sql/quality/002_check_nulls.sql"
-        )
-                    
-        print("\nNull Validation")
-        print("-" * 40)
-        
+
         has_error = False
-                
         for row in rows:
-            result = dict(zip(columns,row))
-            
-            check_name = result["check_name"]
-            total_nulls = result["total_nulls"]
-            severity = result["severity"]
-            
-            print(f"{check_name} : {total_nulls}")
-            
-            if total_nulls > 0 and severity == "error":
-                has_error = True
-                
+            result = dict(zip(columns, row))
+            for key, value in result.items():
+                print(f"{key}: {value}")
+            has_error = has_error or result["has_mismatch"]
+
         if has_error:
-            raise Exception("Null validation failed.")
-                
-                    
+            raise DataQualityError("Entity count mismatch detected.")
+
         print("Validation passed.")
-        
-    def validate_duplicates(self):
-        colums, rows = self.repository.execute_query_from_file(
-            "sql/quality/003_check_duplicates.sql"
+
+    def validate_nulls(self) -> None:
+        self._validate_rows(
+            "sql/quality/002_check_nulls.sql",
+            "Null Validation",
+            "total_nulls",
+            "Null validation failed.",
         )
-        
-        print("\nDuplicates Validation")
-        print("-" * 40)
-        
-        has_error = False
-        
-        for row in rows:
-            result = dict(zip(colums,row))
-            
-            check_name = result["check_name"]
-            total_duplicates = result["total_duplicates"]
-            severity = result["severity"]
-                        
-            print(f"{check_name} : {total_duplicates}")
-                        
-            if total_duplicates > 0 and severity == "error":
-                has_error = True
-                            
-        if has_error:
-            raise Exception("Duplicates validation failed.")
-                                                
-        print("Validation passed.")
-        
-    
-    def validate_referential_integrity(self):
-            colums, rows = self.repository.execute_query_from_file(
-                "sql/quality/004_check_referential_integrity.sql"
-            )
-            
-            print("\nReferential Integrity Validation")
-            print("-" * 40)
-            
-            has_error = False
-            
-            for row in rows:
-                result = dict(zip(colums,row))
-                
-                check_name = result["check_name"]
-                missing_records = result["missing_records"]
-                severity = result["severity"]
-                            
-                print(f"{check_name} : {missing_records}")
-                            
-                if missing_records > 0 and severity == "error":
-                    has_error = True
-                                
-            if has_error:
-                raise Exception("Referential Integrity Validation failed.")
-                                                    
-            print("Validation passed.")
-    
-    def validate_business_rules(self):
-        colums, rows = self.repository.execute_query_from_file(
-            "sql/quality/005_check_business_rules.sql"
+
+    def validate_duplicates(self) -> None:
+        self._validate_rows(
+            "sql/quality/003_check_duplicates.sql",
+            "Duplicates Validation",
+            "total_duplicates",
+            "Duplicates validation failed.",
         )
-            
-        print("\nBusiness rules Validation")
+
+    def validate_referential_integrity(self) -> None:
+        self._validate_rows(
+            "sql/quality/004_check_referential_integrity.sql",
+            "Referential Integrity Validation",
+            "missing_records",
+            "Referential integrity validation failed.",
+        )
+
+    def validate_business_rules(self) -> None:
+        self._validate_rows(
+            "sql/quality/005_check_business_rules.sql",
+            "Business Rules Validation",
+            "failed_rule",
+            "Business rules validation failed.",
+        )
+
+    def _validate_rows(
+        self,
+        file_path: str,
+        title: str,
+        value_column: str,
+        error_message: str,
+    ) -> None:
+        columns, rows = self.repository.execute_query_from_file(file_path)
+
+        print(f"\n{title}")
         print("-" * 40)
-            
+
         has_error = False
-            
         for row in rows:
-            result = dict(zip(colums,row))
-                
-            check_name = result["check_name"]
-            missing_records = result["failed_rule"]
-            severity = result["severity"]
-                            
-            print(f"{check_name} : {missing_records}")
-                            
-            if missing_records > 0 and severity == "error":
-                has_error = True
-                                
+            result = dict(zip(columns, row))
+            value = result[value_column]
+            print(f'{result["check_name"]} : {value}')
+            has_error = has_error or (value > 0 and result["severity"] == "error")
+
         if has_error:
-            raise Exception("Business rules Validation failed.")
-                                                    
+            raise DataQualityError(error_message)
+
         print("Validation passed.")
-            

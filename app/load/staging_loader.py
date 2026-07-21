@@ -1,9 +1,9 @@
 from pathlib import Path
-from app import logger
-from app.db import get_connection
-from app.logger import setuo_logger
 
-logger = setuo_logger(__name__)
+from app.db import get_connection
+from app.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 
 CSV_TABLE_MAP = {
@@ -111,7 +111,7 @@ def load_csv_to_staging(file_path: Path) -> None:
     file_name = file_path.name
 
     if file_name not in CSV_TABLE_MAP:
-        logger.error(f"Skipping unknown file: {file_name}")
+        logger.warning("Skipping unknown file: %s", file_name)
         return
 
     table = CSV_TABLE_MAP[file_name]["table"]
@@ -126,12 +126,12 @@ def load_csv_to_staging(file_path: Path) -> None:
 
     with get_connection() as conn:
         with conn.cursor() as cur:
-            with file_path.open("r", encoding="utf-8") as f:
+            with file_path.open("r", encoding="utf-8") as csv_file:
                 with cur.copy(copy_sql) as copy:
-                    for line in f:
-                        copy.write(line)
+                    while chunk := csv_file.read(1024 * 1024):
+                        copy.write(chunk)
         conn.commit()
-    logger.info(f"Loaded {file_name} into {table}")
+    logger.info("Loaded %s into %s", file_name, table)
 
 
 def load_all_csvs_to_staging(csv_files: list[Path]) -> None:

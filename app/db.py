@@ -1,7 +1,9 @@
 import psycopg
+
 from app.config import Config
 
-def get_connection():
+
+def get_connection() -> psycopg.Connection:
     return psycopg.connect(
         host=Config.DB_HOST,
         port=Config.DB_PORT,
