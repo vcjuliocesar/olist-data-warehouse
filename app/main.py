@@ -1,8 +1,8 @@
 from app.extract.csv_extractor import get_csv_files
 from app.load.staging_loader import load_all_csvs_to_staging
-from app.transform.sql_transformer import run_transformations
 from app.services.quality_service import QualityService
 from app.sql_runner import run_sql_file
+from app.transform.sql_transformer import run_transformations
 from app.utils.timer import Timer
 
 
